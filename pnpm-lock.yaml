@@ -1,0 +1,33 @@
+dependencies:
+  blessed: 0.1.81
+  dom-parser: 0.1.6
+  phin: 3.4.1
+lockfileVersion: 5.1
+packages:
+  /blessed/0.1.81:
+    dev: false
+    engines:
+      node: '>= 0.8.0'
+    hasBin: true
+    resolution:
+      integrity: sha1-+WLWh+wsNpVwrnGvhDJW5tDKESk=
+  /centra/2.4.0:
+    dev: false
+    resolution:
+      integrity: sha512-AWmF3EHNe/noJHviynZOrdnUuQzT5AMgl9nJPXGvnzGXrI2ZvNDrEcdqskc4EtQwt2Q1IggXb0OXy7zZ1Xvvew==
+  /dom-parser/0.1.6:
+    dev: false
+    resolution:
+      integrity: sha512-3nVRKbLEwmGfghLoeT1dxlK/0votalnOfasP+8VCHYDfDuCETY4LeMblfOeqww6XZk2ymZ1Uewy/hVad6Dy3yw==
+  /phin/3.4.1:
+    dependencies:
+      centra: 2.4.0
+    dev: false
+    engines:
+      node: '>= 8'
+    resolution:
+      integrity: sha512-NkBCNRPxeyrgaPlWx4DHTAdca3s2LkvIBiiG6RoSbykcOtW/pA/7rUP/67FPIinvbo7h+HENST/vJ17LdRNUdw==
+specifiers:
+  blessed: ^0.1.81
+  dom-parser: ^0.1.6
+  phin: ^3.4.1

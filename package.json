@@ -1,0 +1,15 @@
+{
+	"name": "dlidx",
+	"version": "0.0.0",
+	"author": "Zack Guard <zack@zackguard.com>",
+	"license": "MIT",
+	"preferGlobal": true,
+	"bin": {
+		"dlidx": "./dlidx.js"
+	},
+	"dependencies": {
+		"blessed": "^0.1.81",
+		"dom-parser": "^0.1.6",
+		"phin": "^3.4.1"
+	}
+}
