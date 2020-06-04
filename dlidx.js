@@ -1,5 +1,8 @@
 const blessed = require("blessed");
+const path = require("path");
+
 const getIndex = require("./getIndex");
+const downloadFile = require("./downloadFile");
 const { die } = require("./util");
 
 const indexName = process.argv[2];
@@ -19,14 +22,85 @@ function showFiles(list, files, filter = "") {
         if (!file.name.toLowerCase().includes(filter.toLowerCase())) continue;
         list.addItem(makeFileItem(indexPlaces, i, file.name));
     }
-    
     screen.render();
 }
+
+/**
+ * Shows a progress modal. Pass `null` into `filename` to hide the modal.
+ * @param {string | null} filename 
+ * @param {number} currentBytes 
+ * @param {number} totalBytes 
+ */
+const progressModal = (function() {
+    let modal, progressBar, progressText;
+
+    return function(filename, currentBytes, totalBytes) {
+        if (filename === null && modal) {
+            screen.remove(modal);
+            modal = null;
+        } else {
+            if (!modal) {
+                modal = blessed.box({
+                    top: "center",
+                    left: "center",
+                    width: "40%",
+                    height: 5 + 2,
+                    tags: true,
+                    border: {
+                        type: "line",
+                        fg: "#f0f0f0"
+                    },
+                    style: {
+                        fg: "white",
+                        bg: "black",
+                    },
+                });
+
+                modal.append(blessed.text({
+                    left: "center",
+                    width: "100%-3",
+                    content: `Downloading:\n'${filename}'...`,
+                }));
+
+                progressText = blessed.text({
+                    left: 1,
+                    top: 3,
+                });
+                modal.append(progressText);
+    
+                progressBar = blessed.progressbar({
+                    height: 1,
+                    left: 1,
+                    width: "100%-4",
+                    bottom: 0,
+                    orientation: "horizontal",
+                    style: {
+                        bg: "#333333",
+                        bar: {
+                            bg: "white",
+                        },
+                    },
+                });
+                modal.append(progressBar);
+    
+                screen.append(modal);
+            }
+
+            let progress = currentBytes / (totalBytes || 1) * 100;
+            progressBar.setProgress(progress);
+
+            progressText.setContent(`${currentBytes} / ${totalBytes} B (${Math.floor(progress)}%)`);
+        }
+        screen.render();
+        
+        return modal;
+    }
+})();
 
 const screen = blessed.screen({ smartCSR: true });
 screen.title = `Index of ${indexName}`;
 
-const marked = []; // array of indexes
+// const marked = []; // array of indexes
 
 (async () => {
     /* prepare the top bar */
@@ -71,9 +145,16 @@ const marked = []; // array of indexes
         screen.render();
     });
 
-    list.pick((...args) => {
-        screen.destroy();
-        console.log({ args })
+    list.on("select", node => {
+        if (!node) return;
+        const idx = parseInt(node.content.split("]")[0].substring(1));
+        const file = files[idx];
+        progressModal(file.name, 0, 0);
+        downloadFile(file.url, path.join(process.cwd(), file.name), (bytesWritten, contentLength) => {
+            progressModal(file.name, bytesWritten, contentLength);
+        }).then(() => {
+            progressModal(null);
+        });
     });
 
     screen.append(listBox);
