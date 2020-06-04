@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const blessed = require("blessed");
 const path = require("path");
 
@@ -27,9 +29,9 @@ function showFiles(list, files, filter = "") {
 
 /**
  * Shows a progress modal. Pass `null` into `filename` to hide the modal.
- * @param {string | null} filename 
- * @param {number} currentBytes 
- * @param {number} totalBytes 
+ * @param {string | null} filename
+ * @param {number} currentBytes
+ * @param {number} totalBytes
  */
 const progressModal = (function() {
     let modal, progressBar, progressText;
@@ -67,7 +69,7 @@ const progressModal = (function() {
                     top: 3,
                 });
                 modal.append(progressText);
-    
+
                 progressBar = blessed.progressbar({
                     height: 1,
                     left: 1,
@@ -82,7 +84,7 @@ const progressModal = (function() {
                     },
                 });
                 modal.append(progressBar);
-    
+
                 screen.append(modal);
             }
 
@@ -92,7 +94,7 @@ const progressModal = (function() {
             progressText.setContent(`${currentBytes} / ${totalBytes} B (${Math.floor(progress)}%)`);
         }
         screen.render();
-        
+
         return modal;
     }
 })();
